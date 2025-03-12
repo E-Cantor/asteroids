@@ -14,6 +14,12 @@ def main():
     print(f"Screen width: {SCREEN_WIDTH}")
     print(f"Screen height: {SCREEN_HEIGHT}")
 
+    #Creating groups to declutter
+    updateable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+
+    Player.containers = (updateable, drawable)
+
     # Create the player at the center of the screen
     x = SCREEN_WIDTH / 2
     y = SCREEN_HEIGHT / 2
@@ -32,9 +38,13 @@ def main():
         screen.fill((0, 0, 0))
 
         # Draw the player
-        player.draw(screen)
+        for obj in drawable:
+            obj.draw(screen)
 
-        # Update the display
+        # Motion granted to the player
+        updateable.update(dt)
+
+        # Update the displayd
         pygame.display.flip()
 
         # Limit the frame rate and calculate delta time
