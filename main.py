@@ -7,6 +7,7 @@ from circleshape import *
 from player import *
 from asteroid import *
 from asteroidfield import *
+from shot import *
 
 
 def main():
@@ -41,7 +42,7 @@ def main():
     # Create the player at the center of the screen
     x = SCREEN_WIDTH / 2
     y = SCREEN_HEIGHT / 2
-    player = Player(x, y)
+    player = Player(x, y, s_updateable)
 
     dt = 0
     clock = pygame.time.Clock()
@@ -68,6 +69,11 @@ def main():
         for obj in a_drawable:
             obj.draw(screen)
 
+        # Update and draw shot-related objects
+        s_updateable.update(dt)
+        for obj in s_drawable:
+            obj.draw(screen) 
+
         # Detecting collision between Asteroid and Player
         for asteroid in a_drawable.sprites():  # assuming 'asteroids' is your asteroid group
             if player.collision(asteroid):  # assuming 'player' is your player object
@@ -75,8 +81,16 @@ def main():
                 import sys
                 sys.exit()  # immediately exit the program
 
-        # Update the display
-        pygame.display.flip()
+        # Detecting collision between Asteroid and Player Shot
+        for asteroid in a_drawable.sprites():
+            for shots in s_drawable.sprites():
+                if shots.collision(asteroid):
+                    asteroid.split()
+                    shots.kill()
+                    break
+
+        # Update the display 
+        pygame.display.flip()d
 
         # Limit the frame rate and calculate delta time
         dt = clock.tick(60) / 1000
